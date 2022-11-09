@@ -3,14 +3,34 @@ let mongoose=require('mongoose');
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-let Person;
+let personSchema = new mongoose.Schema({
+  name : {
+    type: String,
+    required: true
+  },
+  age :  Number,
+  favoriteFoods : [String]
+})
+
+let Person = new mongoose.model("Person",personSchema);
 
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  let newPerson = new Person({
+    name: 'Vlad',
+    age: 32,
+    favouriteFoods: ['Ramen','Sushi','Pasta']
+  })
+  newPerson.save((err,data)=>{
+    if (err) return done(err)
+    return done(null, data)
+  })
 };
 
 const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
+  Person.create(arrayOfPeople,(err,data)=>{
+    if (err) return done(err)
+    return done(null, data) 
+  })
 };
 
 const findPeopleByName = (personName, done) => {
